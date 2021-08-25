@@ -92,7 +92,6 @@ _start:
    int 80h
 
 exit:
-
    mov eax, SYS_EXIT   
    xor ebx, ebx ; 0    
    int 80h
