@@ -1,7 +1,7 @@
 
 section .data
-        question_name_text db "What is your name?", 10
-        input_prompt_text db "> "
+        question_name_text db "What is your name?", 10, 0
+        input_prompt_text db "> ", 0
         greeting_text db "Hello, "
 
 section .bss
@@ -22,39 +22,25 @@ _start:
         syscall                         ; Call kernel to execute this function
 
 _printQuestion:
-        mov rax, 1                      ; Print command
-        mov rdi, 1                      ; Set mode: Output
-        mov rsi, question_name_text     ; What to print
-        mov rdx, 19                     ; Length
-        syscall                         ; Call kernel to execute this function
+        mov rax, question_name_text
+        call _print
         
-        ret                             ; Return
+        ret
 
 ; Print greeting then name
 _printGreeting:
-        ; Print greeting text
-        mov rax, 1                      ; Print command
-        mov rdi, 1                      ; Set mode: Output
-        mov rsi, greeting_text          ; What to print
-        mov rdx, 7                      ; Length
-        syscall                         ; Call kernel to execute this function
-        
-        ; Print name
-        mov rax, 1                      ; Print command
-        mov rdi, 1                      ; Set mode: Output
-        mov rsi, name                   ; What to print
-        mov rdx, 16                     ; Length
-        syscall                         ; Call kernel to execute this function
+        mov rax, greeting_text 
+        call _print
+
+        mov rax, name
+        call _print
 
         ret                             ; Return
 
 _getUserData:
-        ; Print input prompt
-        mov rax, 1                      ; Print command
-        mov rdi, 1                      ; Set mode: Output
-        mov rsi, input_prompt_text      ; What to print
-        mov rdx, 2                      ; Length
-        syscall                         ; Call kernel to execute this function
+
+        mov rax, input_prompt_text
+        call _print
 
         ; Take user input
         mov rax, 0                      ; Input command
@@ -64,5 +50,23 @@ _getUserData:
         syscall                         ; Call kernel to execute this function
 
         ret                             ; Return
+
+_print:
+    push rax
+    mov rbx, 0
+_printLoop:
+    inc rax
+    inc rbx
+    mov cl, [rax]
+    cmp cl, 0
+    jne _printLoop
+
+    mov rax, 1
+    mov rdi, 1
+    pop rsi
+    mov rdx, rbx
+    syscall
+
+    ret
 
 
