@@ -1,4 +1,3 @@
-;x86 Assembly Code
 SYS_EXIT  equ 1
 SYS_WRITE equ 4
 SYS_READ  equ 3
